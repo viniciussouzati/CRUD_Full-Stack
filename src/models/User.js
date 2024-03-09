@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import sharp from "sharp";
 
 const userSchema = new mongoose.Schema(
     {
