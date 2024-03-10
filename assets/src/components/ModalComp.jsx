@@ -12,24 +12,25 @@ import {
     Input,
     Box,
     FormHelperText,
-    Image // Importando Image do Chakra UI para exibir a pré-visualização da imagem
+    Image //------------Chakra UI para exibir a pré-visualização da imagem------------
 }   from "@chakra-ui/react";
 import { useState } from "react";
-import { api } from "../services/api"; // Importando a instância da API
+import { api } from "../services/api"; //------------API------------
 
 const ModalComp = ({ data, setData, dataEdit, isOpen, onClose }) => {
     const [name, setName] = useState(dataEdit?.name || "");
     const [email, setEmail] = useState(dataEdit?.email || "");
     const [password, setPassword] = useState(dataEdit?.password || "");
     const [linkedin, setLinkedin] = useState(dataEdit?.linkedin || "");
-    const [image, setImage] = useState(null); // State para armazenar a imagem selecionada
-    const [imageUrl, setImageUrl] = useState(dataEdit?.imageUrl || null); // State para armazenar a URL da imagem
+    const [image, setImage] = useState(null); 
+    const [imageUrl, setImageUrl] = useState(dataEdit?.imageUrl || null); 
 
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [linkedinError, setLinkedinError] = useState("");
-    const [imageError, setImageError] = useState(""); // State para controlar o erro da imagem
+    const [imageError, setImageError] = useState(""); 
 
+    // ------------expressões regulares------------
     const handleSave = async () => {
         try {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
