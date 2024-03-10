@@ -11,38 +11,88 @@ import {
     FormLabel,
     Input,
     Box,
+    FormHelperText,
+    Image // Importando Image do Chakra UI para exibir a pré-visualização da imagem
 }   from "@chakra-ui/react";
 import { useState } from "react";
-import { api } from "../services/api"; // --------- API ---------
+import { api } from "../services/api"; // Importando a instância da API
 
 const ModalComp = ({ data, setData, dataEdit, isOpen, onClose }) => {
     const [name, setName] = useState(dataEdit?.name || "");
     const [email, setEmail] = useState(dataEdit?.email || "");
     const [password, setPassword] = useState(dataEdit?.password || "");
     const [linkedin, setLinkedin] = useState(dataEdit?.linkedin || "");
+    const [image, setImage] = useState(null); // State para armazenar a imagem selecionada
+    const [imageUrl, setImageUrl] = useState(dataEdit?.imageUrl || null); // State para armazenar a URL da imagem
+
+    const [emailError, setEmailError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
+    const [linkedinError, setLinkedinError] = useState("");
+    const [imageError, setImageError] = useState(""); // State para controlar o erro da imagem
 
     const handleSave = async () => {
         try {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+            const linkedinRegex = /^(https?:\/\/)?(www\.)?linkedin\.com\/in\/[A-Za-z0-9_-]+\/?$/;
+
             if (!name || !email || !password || !linkedin) {
                 return alert("Por favor, preencha todos os campos");
             }
 
-            const userData = { name, email, password, linkedin };
+            if (!emailRegex.test(email)) {
+                setEmailError("Formato de e-mail inválido.");
+                return;
+            } else {
+                setEmailError("");
+            }
+
+            if (!passwordRegex.test(password)) {
+                setPasswordError("A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas e números.");
+                return;
+            } else {
+                setPasswordError("");
+            }
+
+            if (!linkedinRegex.test(linkedin)) {
+                setLinkedinError("URL do LinkedIn inválida.");
+                return;
+            } else {
+                setLinkedinError("");
+            }
+
+            if (!image) {
+                setImageError("Selecione uma imagem.");
+                return;
+            } else {
+                setImageError("");
+            }
+
+            const userData = { name, email, password, linkedin, imageUrl };
 
             if (Object.keys(dataEdit).length) {
-                // ---------PUT para atualizar o usuário---------
                 await api.put(`/users/${dataEdit.id}`, userData);
             } else {
-                // ---------POST---------
                 await api.post("/users", userData);
             }
 
-            // Após a operação ser bem-sucedida, atualize os dados do estado e feche o modal
             const response = await api.get("/users");
             setData(response.data);
             onClose();
         } catch (error) {
             console.error("Error saving user:", error);
+        }
+    };
+
+    const handleImageChange = (e) => {
+        const selectedImage = e.target.files[0];
+        if (selectedImage) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImage(selectedImage);
+                setImageUrl(reader.result);
+            };
+            reader.readAsDataURL(selectedImage);
         }
     };
 
@@ -70,6 +120,7 @@ const ModalComp = ({ data, setData, dataEdit, isOpen, onClose }) => {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
+                                <FormHelperText color="red">{emailError}</FormHelperText>
                             </Box>
                             <Box>
                                 <FormLabel>Senha</FormLabel>
@@ -78,6 +129,7 @@ const ModalComp = ({ data, setData, dataEdit, isOpen, onClose }) => {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
+                                <FormHelperText color="red">{passwordError}</FormHelperText>
                             </Box>
                             <Box>
                                 <FormLabel>LinkedIn</FormLabel>
@@ -86,6 +138,19 @@ const ModalComp = ({ data, setData, dataEdit, isOpen, onClose }) => {
                                     value={linkedin}
                                     onChange={(e) => setLinkedin(e.target.value)}
                                 />
+                                <FormHelperText color="red">{linkedinError}</FormHelperText>
+                            </Box>
+                            <Box>
+                                <FormLabel>Foto</FormLabel>
+                                <Input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                />
+                                <FormHelperText color="red">{imageError}</FormHelperText>
+                                {imageUrl && (
+                                    <Image src={imageUrl} alt="Pré-visualização da imagem" boxSize="100px" mt={2} />
+                                )}
                             </Box>
                         </FormControl>
                     </ModalBody>

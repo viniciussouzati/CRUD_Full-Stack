@@ -11,6 +11,7 @@ import {
   Tbody,
   Td,
   useBreakpointValue,
+  Image,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import ModalComp from "./components/ModalComp";
@@ -30,7 +31,7 @@ const App = () => {
     const fetchData = async () => {
       try {
         const response = await api.get("/users");
-        setData(response.data);
+        setData(response.data.map(user => ({ ...user, photo: '' }))); // Adicionando a propriedade photo aos objetos de usuário
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -41,8 +42,7 @@ const App = () => {
   const handleRemove = async (id) => {
     try {
       await api.delete(`/users/${id}`);
-      const newData = data.filter((item) => item._id !== id);
-      setData(newData);
+      setData(prevData => prevData.filter(item => item._id !== id));
     } catch (error) {
       console.error("Error deleting user:", error);
     }
@@ -58,7 +58,7 @@ const App = () => {
         await api.post("/users", userData);
       }
       const response = await api.get("/users");
-      setData(response.data);
+      setData(response.data.map(user => ({ ...user, photo: '' }))); // Adicionando a propriedade photo aos objetos de usuário
     } catch (error) {
       console.error("Error saving user:", error);
     }
@@ -93,17 +93,27 @@ const App = () => {
                 <Th maxW={isMobile ? 5 : 100} fontSize="20px">
                   LinkedIn
                 </Th>
+                <Th maxW={isMobile ? 5 : 100} fontSize="20px">
+                  Foto
+                </Th>
                 <Th p={0}></Th>
                 <Th p={0}></Th>
               </Tr>
             </Thead>
             <Tbody>
-              {data.map(({ _id, name, email, password, linkedin }, index) => (
+              {data.map(({ _id, name, email, password, linkedin, photo }, index) => (
                 <Tr key={index} cursor="pointer " _hover={{ bg: "gray.100" }}>
                   <Td maxW={isMobile ? 5 : 100}>{name}</Td>
                   <Td maxW={isMobile ? 5 : 100}>{email}</Td>
                   <Td maxW={isMobile ? 5 : 100}>{password}</Td>
                   <Td maxW={isMobile ? 5 : 100}>{linkedin}</Td>
+                  <Td maxW={isMobile ? 5 : 100}>
+                    {photo ? (
+                      <Image src={photo} alt={`Foto de ${name}`} w="100px" h="100px" borderRadius="full" />
+                    ) : (
+                      "Sem foto"
+                    )}
+                  </Td>
                   <Td p={0}>
                     <EditIcon
                       fontSize={20}
