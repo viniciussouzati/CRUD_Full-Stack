@@ -29,7 +29,7 @@ class UsersController {
     }
     async create (req, res) {
         try {
-            const { name, email, password, linkedin } = req.body;
+            const { name, email, linkedin, password } = req.body;
 
             const user = await User.findOne({ email });
 
@@ -39,7 +39,7 @@ class UsersController {
                 .json({ message: `Usuário ${email} já existente.`});
             }
 
-            const newUser = await User.create({ name, email, password, linkedin });
+            const newUser = await User.create({ name, email, linkedin, password  });
             return res
             .status(201)
             .json(newUser);
