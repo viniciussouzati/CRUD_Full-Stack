@@ -62,13 +62,6 @@ const ModalComp = ({ data, setData, dataEdit, isOpen, onClose }) => {
                 setLinkedinError("");
             }
 
-            if (!image) {
-                setImageError("Selecione uma imagem.");
-                return;
-            } else {
-                setImageError("");
-            }
-
             const userData = { name, email, password, linkedin, imageUrl };
 
             if (Object.keys(dataEdit).length) {

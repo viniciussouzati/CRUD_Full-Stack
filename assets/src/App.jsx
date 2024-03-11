@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import ModalComp from "./components/ModalComp";
-import { api } from "./services/api"; // Importando a instância da API
+import { api } from "./services/api"; // --------------API--------------
 
 const App = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -31,7 +31,7 @@ const App = () => {
     const fetchData = async () => {
       try {
         const response = await api.get("/users");
-        setData(response.data.map(user => ({ ...user, photo: '' }))); // Adicionando a propriedade photo aos objetos de usuário
+        setData(response.data.map(user => ({ ...user, photo: '' }))); // --------------photo--------------
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -58,7 +58,7 @@ const App = () => {
         await api.post("/users", userData);
       }
       const response = await api.get("/users");
-      setData(response.data.map(user => ({ ...user, photo: '' }))); // Adicionando a propriedade photo aos objetos de usuário
+      setData(response.data.map(user => ({ ...user, photo: '' }))); // --------------photo--------------
     } catch (error) {
       console.error("Error saving user:", error);
     }
@@ -70,7 +70,8 @@ const App = () => {
       align="center"
       justify="center"
       fontSize="20px"
-      fontFamily="poppins"
+      fontFamily="Poppins"
+      bg="gray.100" // Fundo cinza
     >
       <Box maxW={800} w="100%" h="100vh" py={10} px={2}>
         <Button colorScheme="blue" onClick={() => [setDataEdit({}), onOpen()]}>
@@ -81,33 +82,23 @@ const App = () => {
           <Table mt="6">
             <Thead>
               <Tr>
-                <Th maxW={isMobile ? 5 : 100} fontSize="20px">
-                  Nome
-                </Th>
-                <Th maxW={isMobile ? 5 : 100} fontSize="20px">
-                  E-Mail
-                </Th>
-                <Th maxW={isMobile ? 5 : 100} fontSize="20px">
-                  Password
-                </Th>
-                <Th maxW={isMobile ? 5 : 100} fontSize="20px">
-                  LinkedIn
-                </Th>
-                <Th maxW={isMobile ? 5 : 100} fontSize="20px">
-                  Foto
-                </Th>
+                <Th maxW={isMobile ? 5 : 100} fontSize="sm">Nome</Th>
+                <Th maxW={isMobile ? 5 : 100} fontSize="sm">E-Mail</Th>
+                <Th maxW={isMobile ? 5 : 100} fontSize="sm">Password</Th>
+                <Th maxW={isMobile ? 5 : 100} fontSize="sm">LinkedIn</Th>
+                <Th maxW={isMobile ? 5 : 100} fontSize="sm">Foto</Th>
                 <Th p={0}></Th>
                 <Th p={0}></Th>
               </Tr>
             </Thead>
             <Tbody>
               {data.map(({ _id, name, email, password, linkedin, photo }, index) => (
-                <Tr key={index} cursor="pointer " _hover={{ bg: "gray.100" }}>
-                  <Td maxW={isMobile ? 5 : 100}>{name}</Td>
-                  <Td maxW={isMobile ? 5 : 100}>{email}</Td>
-                  <Td maxW={isMobile ? 5 : 100}>{password}</Td>
-                  <Td maxW={isMobile ? 5 : 100}>{linkedin}</Td>
-                  <Td maxW={isMobile ? 5 : 100}>
+                <Tr key={index} cursor="pointer " _hover={{ bg: "gray.200" }}>
+                  <Td maxW={isMobile ? 5 : 100} fontSize="sm">{name}</Td>
+                  <Td maxW={isMobile ? 5 : 100} fontSize="sm">{email}</Td>
+                  <Td maxW={isMobile ? 5 : 100} fontSize="sm">{password}</Td>
+                  <Td maxW={isMobile ? 5 : 100} fontSize="sm">{linkedin}</Td>
+                  <Td maxW={isMobile ? 5 : 100} fontSize="sm">
                     {photo ? (
                       <Image src={photo} alt={`Foto de ${name}`} w="100px" h="100px" borderRadius="full" />
                     ) : (
